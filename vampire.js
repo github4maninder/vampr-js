@@ -11,6 +11,7 @@ class Vampire {
 
   // Adds the vampire as an offspring of this vampire
   addOffspring(vampire) {
+    
     this.offspring.push(vampire);
     vampire.creator = this;
   }
@@ -21,11 +22,12 @@ class Vampire {
   }
 
   // Returns the number of vampires away from the original vampire this vampire is
+  
   get numberOfVampiresFromOriginal() {
 
     let vampireCount = 0;
     let currentVampire = this;
-
+ 
     while(currentVampire.creator) {
       currentVampire = currentVampire.creator;
       vampireCount++;
@@ -36,12 +38,16 @@ class Vampire {
 
   // Returns true if this vampire is more senior than the other vampire. (Who is closer to the original vampire)
   isMoreSeniorThan(vampire) {
+
     return this.numberOfVampiresFromOriginal < vampire.numberOfVampiresFromOriginal;
+
   }
 
   listOfVampiresFromOriginal() {
+
+    
     let currentVampire = this;
-    let vampiresList = [[currentVampire.name, currentVampire]];
+    let vampiresList = [[currentVampire.name,currentVampire]];
 
     while(currentVampire.creator) {
       currentVampire = currentVampire.creator;
@@ -51,22 +57,6 @@ class Vampire {
     return vampiresList;
   }
 
-  /** Tree traversal methods **/
-
-  // Returns the vampire object with that name, or null if no vampire exists with that name
-  vampireWithName(name) {
-    
-  }
-
-  // Returns the total number of vampires that exist
-  get totalDescendents() {
-    
-  }
-
-  // Returns an array of all the vampires that were converted after 1980
-  get allMillennialVampires() {
-    
-  }
 
   /** Stretch **/
 
@@ -80,95 +70,96 @@ class Vampire {
     let thisVampireAncestors = this.listOfVampiresFromOriginal();
     let anotherVampireAncestors = vampire.listOfVampiresFromOriginal();
 
+
+
     for (let ancestor of thisVampireAncestors) {
-      for(let ancestor2 of anotherVampireAncestors){
-        if (ancestor[0] === ancestor2[0]){
+      for (let ancestor2 of anotherVampireAncestors){
+        if (ancestor[0] === ancestor2[0]) {
           return ancestor[1];
         }
       }
     }
   }
-}
 
-// Returns the vampire object with that name, or null if no vampire exists with that name
-vampireWithName(name) {
+  // Returns the vampire object with that name, or null if no vampire exists with that name
+  vampireWithName(name) {
 
-  //Go all of the way up to the root:
+      //Go all of the way up to the root:
 
-  let mainVampire = this;
+      let mainVampire = this;
 
-  while (mainVampire.creator !== null) {
-    mainVampire = mainVampire.creator;
+      while (mainVampire.creator !== null) {
+        mainVampire = mainVampire.creator;
+      }
+
+      //Go through all nodes to search for a specified named:
+
+      let stack = mainVampire.offspring;
+
+      for (let vampire of stack) {
+
+        if (vampire.name = name) {
+
+            return vampire;
+
+        } else {
+
+          vampire.offspring.forEach(element => {
+            stack.push(element);
+          });
+
+        }
+
+      }
+    
+    return null;
+
   }
 
-  //Go through all nodes to search for a specified named:
+  // Returns the total number of vampires that exist
+  get totalDescendents() {
 
-  let stack = mainVampire.offspring;
+    let vampCount = 0;
+   
+      for (let node of this.offspring) {
 
-  for (let vampire of stack) {
+        vampCount += 1 + node.totalDescendents;
+        
+    }
 
-    if (vampire.name = name) {
+    return vampCount;
+  }
 
-        return vampire;
+  // Returns an array of all the vampires that were converted after 1980
+  get allMillennialVampires() {
 
-    } else {
+    //Go all of the way up to the root:
+    let result = [];
+    let mainVampire = this;
+
+    while (mainVampire.creator !== null) {
+      mainVampire = mainVampire.creator;
+    }
+
+    //Go through all nodes to search for a specified named:
+
+    let queue = mainVampire.offspring;
+
+    for (let vampire of queue) {
+
+      if (Number(vampire.yearConverted) > Number(1980)) {
+          result.push(vampire);
+      } 
 
       vampire.offspring.forEach(element => {
-        stack.push(element);
+      queue.push(element);
+      
       });
 
     }
 
+  return result;
   }
-
-return null;
-
-}
-
-// Returns the total number of vampires that exist
-get totalDescendents() {
-
-let vampCount = 0;
-
-  for (let node of this.offspring) {
-
-    vampCount += 1 + node.totalDescendents;
-    
-}
-
-return vampCount;
-}
-
-// Returns an array of all the vampires that were converted after 1980
-get allMillennialVampires() {
-
-//Go all of the way up to the root:
-let result = [];
-let mainVampire = this;
-
-while (mainVampire.creator !== null) {
-  mainVampire = mainVampire.creator;
-}
-
-//Go through all nodes to search for a specified named:
-
-let queue = mainVampire.offspring;
-
-for (let vampire of queue) {
-
-  if (Number(vampire.yearConverted) > Number(1980)) {
-      result.push(vampire);
-  } 
-
-  vampire.offspring.forEach(element => {
-  queue.push(element);
-  
-  });
-
-}
-
-return result;
-}
 }
 
 module.exports = Vampire;
