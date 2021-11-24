@@ -90,4 +90,85 @@ class Vampire {
   }
 }
 
+// Returns the vampire object with that name, or null if no vampire exists with that name
+vampireWithName(name) {
+
+  //Go all of the way up to the root:
+
+  let mainVampire = this;
+
+  while (mainVampire.creator !== null) {
+    mainVampire = mainVampire.creator;
+  }
+
+  //Go through all nodes to search for a specified named:
+
+  let stack = mainVampire.offspring;
+
+  for (let vampire of stack) {
+
+    if (vampire.name = name) {
+
+        return vampire;
+
+    } else {
+
+      vampire.offspring.forEach(element => {
+        stack.push(element);
+      });
+
+    }
+
+  }
+
+return null;
+
+}
+
+// Returns the total number of vampires that exist
+get totalDescendents() {
+
+let vampCount = 0;
+
+  for (let node of this.offspring) {
+
+    vampCount += 1 + node.totalDescendents;
+    
+}
+
+return vampCount;
+}
+
+// Returns an array of all the vampires that were converted after 1980
+get allMillennialVampires() {
+
+//Go all of the way up to the root:
+let result = [];
+let mainVampire = this;
+
+while (mainVampire.creator !== null) {
+  mainVampire = mainVampire.creator;
+}
+
+//Go through all nodes to search for a specified named:
+
+let queue = mainVampire.offspring;
+
+for (let vampire of queue) {
+
+  if (Number(vampire.yearConverted) > Number(1980)) {
+      result.push(vampire);
+  } 
+
+  vampire.offspring.forEach(element => {
+  queue.push(element);
+  
+  });
+
+}
+
+return result;
+}
+}
+
 module.exports = Vampire;
